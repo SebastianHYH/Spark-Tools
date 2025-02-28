@@ -58,14 +58,19 @@ if album_data:
         safe_album_name = "".join(c for c in album_name if c.isalnum() or c in (" ", "-", "_")).rstrip()
         file_extension = os.path.splitext(image_url)[1]  # Get the image file extension
         file_name = os.path.join(output_folder, f"{safe_album_name}{file_extension}")
+        image_name = os.path.join(f"{safe_album_name}{file_extension}")
 
         try:
             # Download and save the image
             response = requests.get(image_url)
             response.raise_for_status()
-            with open(file_name, "wb") as img_file:
-                img_file.write(response.content)
-            print(f"Downloaded: {file_name}")
+            if image_name in os.listdir(output_folder):
+                print(f"{image_name} already exists.")
+                continue
+            else:
+                with open(file_name, "wb") as img_file:
+                    img_file.write(response.content)
+                print(f"Downloaded: {file_name}")
         except requests.RequestException as e:
             print(f"Failed to download {image_url}: {e}")
 else:
