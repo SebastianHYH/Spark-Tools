@@ -1,18 +1,6 @@
-# Spark-Tools
-Scripts that get and modify data in some way
+# Spark-CLI
+A Fortnite Festival song viewer localized entirely within a terminal!
 
-## Album Image Grabber
+A complete revamp of Spark-Tools! Old spark-tools only grabs album images and midi files (eugh, yuck, ew). This revamp will hopefully bring life back to Spark-Tools (also i needed something to do whilst I'm out of town)
 
-A script that gets all album images through a json file.
-
-Usage:
-- Run the script normally
-- The script will automatically create a new folder and place all the album images there alongside the track names
-
-## Album Music Grabber
-
-A script that gets a midi of a specific song.
-
-Usage:
-- Edit the "song_title" within the script to specify the midi of the song to get
-- Run the script normally
+Enjoy!
