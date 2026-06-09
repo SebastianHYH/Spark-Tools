@@ -9,6 +9,9 @@ import (
 
 const baseURL = "https://fortnitecontent-website-prod07.ol.epicgames.com/content/api/pages/fortnite-game/spark-tracks"
 
+/*
+Fetch retrieves data from baseURL
+*/
 func Fetch() {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", baseURL, nil)
@@ -28,4 +31,19 @@ func Fetch() {
 	}
 
 	fmt.Println(string(body))
+
+	// save to local for local fetching
+	err = saveToLocal(body)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func saveToLocal(data []byte) error {
+	// Implementation for saving data to a local file
+	return nil
+}
+
+func FetchFromLocal() {
+	// Implementation for fetching data from saved local file
 }
