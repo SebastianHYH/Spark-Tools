@@ -5,9 +5,11 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 )
 
 const baseURL = "https://fortnitecontent-website-prod07.ol.epicgames.com/content/api/pages/fortnite-game/spark-tracks"
+const localPath = "./data/spark-tracks.json"
 
 /*
 Fetch retrieves data from baseURL
@@ -28,6 +30,10 @@ func Fetch() {
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
+		fmt.Println("Error reading response body:", err)
+		fmt.Println("Fetching from local storage...")
+		fetchFromLocal()
+		return
 	}
 
 	fmt.Println(string(body))
@@ -40,10 +46,26 @@ func Fetch() {
 }
 
 func saveToLocal(data []byte) error {
-	// Implementation for saving data to a local file
-	return nil
+	file, err := os.Create(localPath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	_, err = file.Write(data)
+	return err
 }
 
-func FetchFromLocal() {
-	// Implementation for fetching data from saved local file
+func fetchFromLocal() {
+	file, err := os.Open(localPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	body, err := io.ReadAll(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(body))
 }
