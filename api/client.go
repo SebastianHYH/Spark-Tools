@@ -18,22 +18,24 @@ func Fetch() {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", baseURL, nil)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("Error creating request:", err)
+		fmt.Println("Fetching from local storage...")
+		fetchFromLocal()
+		return
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("Error fetching from remote:", err)
+		fmt.Println("Fetching from local storage...")
+		fetchFromLocal()
+		return
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
-		fmt.Println("Error reading response body:", err)
-		fmt.Println("Fetching from local storage...")
-		fetchFromLocal()
-		return
 	}
 
 	fmt.Println(string(body))
@@ -45,6 +47,9 @@ func Fetch() {
 	}
 }
 
+/*
+saveToLocal saves data to json file
+*/
 func saveToLocal(data []byte) error {
 	file, err := os.Create(localPath)
 	if err != nil {
@@ -56,10 +61,13 @@ func saveToLocal(data []byte) error {
 	return err
 }
 
+/*
+fetchFromLocal fetches data from the local json file
+*/
 func fetchFromLocal() {
 	file, err := os.Open(localPath)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("No remote connection and no local cache available:", err)
 	}
 	defer file.Close()
 
