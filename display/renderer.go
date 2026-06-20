@@ -9,14 +9,14 @@ import (
 
 // ANSI color/style codes used throughout the renderer.
 const (
-	reset     = "\x1b[0m"
-	bold      = "\x1b[1m"
-	dim       = "\x1b[2m"
-	italic    = "\x1b[3m"
+	reset  = "\x1b[0m"
+	bold   = "\x1b[1m"
+	dim    = "\x1b[2m"
+	italic = "\x1b[3m"
 
-	colorPurple  = "\x1b[38;2;168;85;247m"  // Fortnite Festival purple
-	colorCyan    = "\x1b[38;2;34;211;238m"   // Accent cyan
-	colorYellow  = "\x1b[38;2;250;204;21m"   // Star / highlight yellow
+	colorPurple  = "\x1b[38;2;168;85;247m" // Fortnite Festival purple
+	colorCyan    = "\x1b[38;2;34;211;238m" // Accent cyan
+	colorYellow  = "\x1b[38;2;250;204;21m" // Star / highlight yellow
 	colorWhite   = "\x1b[38;2;255;255;255m"
 	colorGray    = "\x1b[38;2;156;163;175m"
 	colorGreen   = "\x1b[38;2;74;222;128m"
@@ -172,7 +172,7 @@ func printTwoColumn(left, right []string, leftWidth int) {
 func printHeader(title string, width int) {
 	divider := colorPurple + strings.Repeat("═", width) + reset
 	pad := (width - len(title)) / 2
-	centered := strings.Repeat(" ", pad) + colorYellow+bold+title+reset
+	centered := strings.Repeat(" ", pad) + colorYellow + bold + title + reset
 
 	fmt.Println(divider)
 	fmt.Println(centered)
