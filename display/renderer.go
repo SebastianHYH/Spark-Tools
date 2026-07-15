@@ -31,10 +31,11 @@ func RenderTrack(track models.Track, termWidth int) error {
 	cfg := DefaultASCIIConfig()
 
 	// Art panel takes ~40% of terminal width; metadata panel takes the rest.
+	// Height is left at 0 so it follows the album art's aspect ratio.
 	cfg.Width = termWidth * 2 / 5
-	cfg.Height = 22
-	cfg.UseColor = true
-	cfg.UseUnicode = true
+
+	// Album art is square, so the placeholder matches what the art would occupy.
+	placeholderHeight := int(cellAspect * float64(cfg.Width))
 
 	// Fetch and render album art (fall back to placeholder on error).
 	var artLines []string
@@ -42,10 +43,10 @@ func RenderTrack(track models.Track, termWidth int) error {
 		var err error
 		artLines, err = FetchAndRenderASCII(track.AlbumArt, cfg)
 		if err != nil {
-			artLines = PlaceholderArt(cfg.Width, cfg.Height)
+			artLines = PlaceholderArt(cfg.Width, placeholderHeight)
 		}
 	} else {
-		artLines = PlaceholderArt(cfg.Width, cfg.Height)
+		artLines = PlaceholderArt(cfg.Width, placeholderHeight)
 	}
 
 	infoLines := buildInfoPanel(track, termWidth-cfg.Width-3, len(artLines))
@@ -63,7 +64,7 @@ func RenderTrackList(tracks []models.Track, termWidth int) {
 		num := fmt.Sprintf("%3d.", i+1)
 
 		// Difficulty bar for lead guitar as a quick visual indicator.
-		diffBar := difficultyBar(t.DifficultyGuitar, 7)
+		diffBar := difficultyBar(t.Intensities.Guitar, 7)
 
 		fmt.Printf(
 			"%s%s%s  %s%-35s%s  %s%s%s  %s%s%s  %s%s%s\n",
@@ -117,12 +118,12 @@ func buildInfoPanel(track models.Track, width, targetHeight int) []string {
 	// — Difficulty table —
 	add(colorWhite + bold + "Difficulty" + reset)
 	add("")
-	add(instrumentRow("Vocals  ", track.DifficultyVocals))
-	add(instrumentRow("Guitar  ", track.DifficultyGuitar))
-	add(instrumentRow("Bass    ", track.DifficultyBass))
-	add(instrumentRow("Drums   ", track.DifficultyDrums))
-	add(instrumentRow("Pro Lead", track.DifficultyProLead))
-	add(instrumentRow("Pro Bass", track.DifficultyProBass))
+	add(instrumentRow("Vocals  ", track.Intensities.Vocals))
+	add(instrumentRow("Guitar  ", track.Intensities.Guitar))
+	add(instrumentRow("Bass    ", track.Intensities.Bass))
+	add(instrumentRow("Drums   ", track.Intensities.Drums))
+	add(instrumentRow("Pro Lead", track.Intensities.ProLead))
+	add(instrumentRow("Pro Bass", track.Intensities.ProBass))
 
 	add("")
 	add(colorGray + strings.Repeat(dividerChar, min(width, 30)) + reset)
@@ -191,9 +192,9 @@ func instrumentRow(label string, level int) string {
 	stars := ""
 	for i := 1; i <= maxLevel; i++ {
 		if i <= level {
-			stars += colorYellow + "★" + reset
+			stars += "▓" + reset
 		} else {
-			stars += colorGray + "☆" + reset
+			stars += "░" + reset
 		}
 	}
 	levelStr := fmt.Sprintf("%s%d%s", colorGray, level, reset)
